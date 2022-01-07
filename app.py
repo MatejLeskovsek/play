@@ -102,7 +102,7 @@ def config_update():
         return {"response": "Something went wrong."}, 500
 docs.register(config_update)
 
-# FUNCTION TO GET CURRENT CONFIG
+# FUNCTION TO GET CURRENT CONFIG 
 @app.route("/plgetconfig")
 @marshal_with(NoneSchema, description='200 OK', code=200)
 def get_config():
