@@ -92,7 +92,7 @@ def config_update():
     sys.stdout.write("Play microservice: /plconfig accessed\n")
     
     try:
-        microservice = request.form["name"]
+        microservice = str(request.form["name"])
         ms_ip = request.form["ip"]
         if microservice == "database_core_service":
             database_core_service = ms_ip
