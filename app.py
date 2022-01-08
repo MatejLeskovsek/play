@@ -8,6 +8,7 @@ from flask_apispec import use_kwargs, marshal_with
 from flask_apispec import FlaskApiSpec
 from marshmallow import Schema
 from flask_cors import CORS, cross_origin
+import sys
 
 app = Flask(__name__)
 app.config.update({
@@ -58,7 +59,7 @@ def update_ip():
     global service_ip
     global service_name
     global users
-    print("/plupdate_ip accessed")
+    sys.stdout.write("Play microservice: /plupdate_ip accessed\n")
     
     service_ip = request.form["ip"]
     
@@ -84,7 +85,7 @@ def config_update():
     global service_ip
     global service_name
     global users
-    print("/plconfig accessed")
+    sys.stdout.write("Play microservice: /plconfig accessed\n")
     
     try:
         microservice = request.form["name"]
@@ -113,7 +114,7 @@ def get_config():
     global service_ip
     global service_name
     global users
-    print("/plgetconfig accessed")
+    sys.stdout.write("Play microservice: /plgetconfig accessed\n")
     
     return {"response": str([ecostreet_core_service, configuration_core_service, database_core_service, admin_core_service])}, 200
 docs.register(get_config)
@@ -123,7 +124,7 @@ docs.register(get_config)
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='METRIC CHECK FAIL', code=500)
 def get_health():
-    print("/plmetrics accessed")
+    sys.stdout.write("Play microservice: /plmetrics accessed\n")
     start = datetime.datetime.now()
     try:
         url = 'http://' + database_core_service + '/cfhealthcheck'
@@ -152,7 +153,7 @@ docs.register(get_health)
 @app.route("/plhealthcheck")
 @marshal_with(NoneSchema, description='200 OK', code=200)
 def send_health():
-    print("/plhealthcheck accessed")
+    sys.stdout.write("Play microservice: /plhealthcheck accessed\n")
     try:
         url = 'http://' + ecostreet_core_service + '/lg'
         response = requests.get(url)
