@@ -63,7 +63,6 @@ def update_ip():
     global admin_core_service
     global service_ip
     global service_name
-    global users
     sys.stdout.write("Play microservice: /plupdate_ip accessed\n")
     
     service_ip = request.form["ip"]
@@ -89,7 +88,7 @@ def config_update():
     global admin_core_service
     global service_ip
     global service_name
-    global users
+    
     sys.stdout.write("Play microservice: /plconfig accessed\n")
     
     try:
@@ -118,7 +117,7 @@ def get_config():
     global admin_core_service
     global service_ip
     global service_name
-    global users
+    
     sys.stdout.write("Play microservice: /plgetconfig accessed\n")
     
     return {"response": str([ecostreet_core_service, configuration_core_service, database_core_service, admin_core_service])}, 200
