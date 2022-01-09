@@ -72,6 +72,7 @@ docs.register(hello_world)
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong.', code=500)
 def get_games():
+    logger.info("Play microservice: /plgetgames accessed\n")
     try:
         url = 'http://' + database_core_service + '/dbgetgames'
         response = requests.post(url, data={"AccessToken": request.form["AccessToken"]})
