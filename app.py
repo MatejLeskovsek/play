@@ -83,7 +83,7 @@ def get_games():
         return {"response": "Something went wrong."}, 500 
 docs.register(hello_world)
 
-# JOIN GAME
+# JOIN GAME 
 @app.route("/pljoingame", methods=["POST"])
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong.', code=500)
@@ -91,7 +91,7 @@ def join_game():
     logger.info("Play microservice: /pljoingame accessed\n")
     try:
         url = 'http://' + database_core_service + '/dbjoingame'
-        response = requests.post(url, data={"AccessToken": request.form["AccessToken"]})
+        response = requests.post(url, data={"name": request.form["name"], "AccessToken": request.form["AccessToken"]})
         logger.info("Play microservice: /pljoingame finished\n")
         return {"response": response.text}, 200
     except:
@@ -108,7 +108,7 @@ def leave_game():
     logger.info("Play microservice: /plleavegame accessed\n")
     try:
         url = 'http://' + database_core_service + '/dbleavegame'
-        response = requests.post(url, data={"AccessToken": request.form["AccessToken"]})
+        response = requests.post(url, data={"name": request.form["name"], "AccessToken": request.form["AccessToken"]})
         logger.info("Play microservice: /plleavegame finished\n")
         return {"response": response.text}, 200
     except:
