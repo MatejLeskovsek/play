@@ -9,7 +9,7 @@ from flask_apispec import FlaskApiSpec
 from marshmallow import Schema
 from flask_cors import CORS, cross_origin
 import sys
-
+from circuitbreaker import circuit
 import logging
 import socket
 from logging.handlers import SysLogHandler
@@ -56,6 +56,7 @@ def not_found(e):
 # HEALTH PAGE
 @app.route("/")
 @marshal_with(NoneSchema, description='200 OK', code=200)
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
 def health():
     return {"response": "200"}, 200
 docs.register(health)
@@ -63,6 +64,7 @@ docs.register(health)
 # HOME PAGE
 @app.route("/pl")
 @marshal_with(NoneSchema, description='200 OK', code=200)
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
 def hello_world():
     return {"response": "Play microservice."}, 200
 docs.register(hello_world)
@@ -71,6 +73,7 @@ docs.register(hello_world)
 @app.route("/plgetgames", methods=["POST"])
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong.', code=500)
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
 def get_games():
     logger.info("Play microservice: /plgetgames accessed\n")
     try:
@@ -87,6 +90,7 @@ docs.register(hello_world)
 @app.route("/pljoingame", methods=["POST"])
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong.', code=500)
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
 def join_game():
     logger.info("Play microservice: /pljoingame accessed\n")
     try:
@@ -104,6 +108,7 @@ docs.register(join_game)
 @app.route("/plleavegame", methods=["POST"])
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong.', code=500)
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
 def leave_game():
     logger.info("Play microservice: /plleavegame accessed\n")
     try:
@@ -121,6 +126,7 @@ docs.register(leave_game)
 @use_kwargs({'name': fields.Str(), 'ip': fields.Str()})
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong', code=500)
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
 def update_ip():
     global ecostreet_core_service
     global configuration_core_service
@@ -148,6 +154,7 @@ docs.register(update_ip)
 @use_kwargs({'name': fields.Str(), 'ip': fields.Str()})
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong', code=500)
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
 def config_update():
     global ecostreet_core_service
     global configuration_core_service
@@ -178,6 +185,7 @@ docs.register(config_update)
 # FUNCTION TO GET CURRENT CONFIG 
 @app.route("/plgetconfig")
 @marshal_with(NoneSchema, description='200 OK', code=200)
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
 def get_config():
     global ecostreet_core_service
     global configuration_core_service
@@ -195,6 +203,7 @@ docs.register(get_config)
 @app.route("/plmetrics")
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='METRIC CHECK FAIL', code=500)
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
 def get_health():
     logger.info("Play microservice: /plmetrics accessed\n")
     start = datetime.datetime.now()
@@ -227,6 +236,7 @@ docs.register(get_health)
 # HEALTH CHECK
 @app.route("/plhealthcheck")
 @marshal_with(NoneSchema, description='200 OK', code=200)
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
 def send_health():
     logger.info("Play microservice: /plhealthcheck accessed\n")
     try:
