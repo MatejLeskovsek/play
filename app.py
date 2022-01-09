@@ -70,12 +70,13 @@ docs.register(hello_world)
 # HOME PAGE
 @app.route("/plgetgames", methods=["POST"])
 @marshal_with(NoneSchema, description='200 OK', code=200)
+@marshal_with(NoneSchema, description='Something went wrong.', code=500)
 def get_games():
     try:
         url = 'http://' + database_core_service + '/dbgetgames'
         response = requests.post(url, data={"AccessToken": request.form["AccessToken"]})
         logger.info("Play microservice: /plgetgames finished\n")
-        return response
+        return {"response": str(response.text)}, 200
     except:
         logger.info("Play microservice: /plgetgames hit an error\n")
         return {"response": "Something went wrong."}, 500 
