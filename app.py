@@ -82,6 +82,39 @@ def get_games():
         logger.info("Play microservice: /plgetgames hit an error\n")
         return {"response": "Something went wrong."}, 500 
 docs.register(hello_world)
+
+# JOIN GAME
+@app.route("/pljoingame", methods=["POST"])
+@marshal_with(NoneSchema, description='200 OK', code=200)
+@marshal_with(NoneSchema, description='Something went wrong.', code=500)
+def join_game():
+    logger.info("Play microservice: /pljoingame accessed\n")
+    try:
+        url = 'http://' + database_core_service + '/dbjoingame'
+        response = requests.post(url, data={"AccessToken": request.form["AccessToken"]})
+        logger.info("Play microservice: /pljoingame finished\n")
+        return {"response": response.text}, 200
+    except:
+        logger.info("Play microservice: /pljoingame hit an error\n")
+        return {"response": "Something went wrong."}, 500 
+docs.register(join_game)
+
+
+# LEAVE GAME
+@app.route("/plleavegame", methods=["POST"])
+@marshal_with(NoneSchema, description='200 OK', code=200)
+@marshal_with(NoneSchema, description='Something went wrong.', code=500)
+def leave_game():
+    logger.info("Play microservice: /plleavegame accessed\n")
+    try:
+        url = 'http://' + database_core_service + '/dbleavegame'
+        response = requests.post(url, data={"AccessToken": request.form["AccessToken"]})
+        logger.info("Play microservice: /plleavegame finished\n")
+        return {"response": response.text}, 200
+    except:
+        logger.info("Play microservice: /plleavegame hit an error\n")
+        return {"response": "Something went wrong."}, 500 
+docs.register(leave_game)
  
 # SERVICE IP UPDATE FUNCTION
 @app.route("/plupdate_ip", methods = ['POST'])
