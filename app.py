@@ -67,7 +67,19 @@ def hello_world():
     return {"response": "Play microservice."}, 200
 docs.register(hello_world)
 
-
+# HOME PAGE
+@app.route("/plgetgames", methods=["POST"])
+@marshal_with(NoneSchema, description='200 OK', code=200)
+def get_games():
+    try:
+        url = 'http://' + database_core_service + '/dbgetgames'
+        response = requests.post(url, data={"AccessToken": request.form["AccessToken"]})
+        logger.info("Play microservice: /plgetgames finished\n")
+        return response.text
+    except:
+        logger.info("Play microservice: /plgetgames hit an error\n")
+        return {"response": "Something went wrong."}, 500 
+docs.register(hello_world)
  
 # SERVICE IP UPDATE FUNCTION
 @app.route("/plupdate_ip", methods = ['POST'])
