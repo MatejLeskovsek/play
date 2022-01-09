@@ -77,7 +77,7 @@ def get_games():
         url = 'http://' + database_core_service + '/dbgetgames'
         response = requests.post(url, data={"AccessToken": request.form["AccessToken"]})
         logger.info("Play microservice: /plgetgames finished\n")
-        return {"response": str(response.text)}, 200
+        return {"response": response.text}, 200
     except:
         logger.info("Play microservice: /plgetgames hit an error\n")
         return {"response": "Something went wrong."}, 500 
