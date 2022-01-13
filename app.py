@@ -13,6 +13,7 @@ from circuitbreaker import circuit
 import logging
 import socket
 from logging.handlers import SysLogHandler
+import json
 
 app = Flask(__name__)
 app.config.update({
@@ -69,7 +70,22 @@ def hello_world():
     return {"response": "Play microservice."}, 200
 docs.register(hello_world)
 
-# HOME PAGE
+@app.route("/plgetholidays")
+@marshal_with(NoneSchema, code=200)
+@marshal_with(NoneSchema, code=500)
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
+def get_holidays():
+    logger.info("Play microservice: /plgetholidays accessed\n")
+    try:
+        response = requests.get("https://teaching.lavbic.net/api/prazniki/iskanje/leto/2022")
+        logger.info("Play microservice: /plgetholidays finished\n")
+        return {"response": json.loads(response.text)}, 200
+    except:
+        logger.info("Play microservice: /plgetholidays hit an error\n")
+        return {"response": "External API currently unavailable."}, 500
+docs.register(get_holidays)
+
+# GET GAMES
 @app.route("/plgetgames", methods=["POST"])
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong.', code=500)
