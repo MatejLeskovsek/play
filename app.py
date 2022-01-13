@@ -63,7 +63,7 @@ def fallback_circuit():
 async def send_sms():
     url = "https://sms77io.p.rapidapi.com/sms"
 
-    payload = "to=+38651240003&p=lMs1ovHUq9dkr1irz477U0bqZcZN4ubgKWP0YMQ5JZuiGhIHIaU9WZssBj1chG1m&text=[THIS IS WHERE DATA WOULD BE INSERTED]."
+    payload = "from=+38651626819&to=+38651240003&p=lMs1ovHUq9dkr1irz477U0bqZcZN4ubgKWP0YMQ5JZuiGhIHIaU9WZssBj1chG1m&text=[THIS IS WHERE DATA WOULD BE INSERTED]."
     headers = {
         'content-type': "application/x-www-form-urlencoded",
         'x-rapidapi-host': "sms77io.p.rapidapi.com",
