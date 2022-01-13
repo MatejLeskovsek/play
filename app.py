@@ -86,7 +86,7 @@ def get_holidays():
 docs.register(get_holidays)
 
 # GET GAMES
-@app.route("/plgetgames", methods=["DELETE"])
+@app.route("/plgetgames", methods=["POST"])
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong.', code=500)
 @circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
@@ -103,7 +103,7 @@ def get_games():
 docs.register(hello_world)
 
 # JOIN GAME 
-@app.route("/pljoingame", methods=["POST"])
+@app.route("/pljoingame", methods=["PUT"])
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong.', code=500)
 @circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
@@ -121,7 +121,7 @@ docs.register(join_game)
 
 
 # LEAVE GAME
-@app.route("/plleavegame", methods=["POST"])
+@app.route("/plleavegame", methods=["DELETE"])
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong.', code=500)
 @circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
@@ -138,7 +138,7 @@ def leave_game():
 docs.register(leave_game)
  
 # SERVICE IP UPDATE FUNCTION
-@app.route("/plupdate_ip", methods = ['POST'])
+@app.route("/plupdate_ip", methods = ['PUT'])
 @use_kwargs({'name': fields.Str(), 'ip': fields.Str()})
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong', code=500)
