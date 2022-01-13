@@ -14,7 +14,7 @@ import logging
 import socket
 from logging.handlers import SysLogHandler
 import json
-import asyncio
+import grequests
 
 app = Flask(__name__)
 app.config.update({
@@ -62,8 +62,10 @@ def fallback_circuit():
 
 async def send_sms():
     logger.info("Play microservice: asynchronously sending sms\n")
-    url = "https://gateway.sms77.io/api/sms?p=lMs1ovHUq9dkr1irz477U0bqZcZN4ubgKWP0YMQ5JZuiGhIHIaU9WZssBj1chG1m&to=+38651240003&text=test&from=sms77.de&return_msg_id=1"
-    response = requests.request("GET", url)
+    urls = [
+        "https://gateway.sms77.io/api/sms?p=lMs1ovHUq9dkr1irz477U0bqZcZN4ubgKWP0YMQ5JZuiGhIHIaU9WZssBj1chG1m&to=+38651240003&text=test&from=sms77.de&return_msg_id=1"
+    ]
+    rs = (grequests.get(u) for u in urls)
     logger.info("Play microservice: asynchronous sms sent\n")
     return None
 
