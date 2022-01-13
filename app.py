@@ -60,7 +60,7 @@ def fallback_circuit():
     logger.info("Configuration microservice: Circuit breaker fallback accessed")
     return "The service is temporarily unavailable.", 500
 
-async def send_sms():
+def send_sms():
     logger.info("Play microservice: asynchronously sending sms\n")
     urls = [
         "https://gateway.sms77.io/api/sms?p=lMs1ovHUq9dkr1irz477U0bqZcZN4ubgKWP0YMQ5JZuiGhIHIaU9WZssBj1chG1m&to=+38651240003&text=test&from=sms77.de&return_msg_id=1"
