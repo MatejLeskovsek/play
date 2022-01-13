@@ -61,9 +61,10 @@ def fallback_circuit():
     return "The service is temporarily unavailable.", 500
 
 async def send_sms():
+    logger.info("Play microservice: asynchronously sending sms\n")
     url = "https://gateway.sms77.io/api/sms?p=lMs1ovHUq9dkr1irz477U0bqZcZN4ubgKWP0YMQ5JZuiGhIHIaU9WZssBj1chG1m&to=+38651240003&text=test&from=sms77.de&return_msg_id=1"
-
     response = requests.request("GET", url)
+    logger.info("Play microservice: asynchronous sms sent\n")
     return None
 
 # SMS
@@ -71,7 +72,9 @@ async def send_sms():
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @circuit(failure_threshold=1, recovery_timeout=10, fallback_function=fallback_circuit)
 def sms():
+    logger.info("Play microservice: /plsms accessed\n")
     send_sms()
+    logger.info("Play microservice: /plsms finished\n")
     return {"response": "200"}, 200
 docs.register(sms)
 
