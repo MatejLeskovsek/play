@@ -61,16 +61,9 @@ def fallback_circuit():
     return "The service is temporarily unavailable.", 500
 
 async def send_sms():
-    url = "https://sms77io.p.rapidapi.com/sms"
+    url = "https://gateway.sms77.io/api/sms?p=lMs1ovHUq9dkr1irz477U0bqZcZN4ubgKWP0YMQ5JZuiGhIHIaU9WZssBj1chG1m&to=+38651240003&text=test&from=sms77.de&return_msg_id=1"
 
-    payload = "from=+38651626819&to=+38651240003&p=lMs1ovHUq9dkr1irz477U0bqZcZN4ubgKWP0YMQ5JZuiGhIHIaU9WZssBj1chG1m&text=[THIS IS WHERE DATA WOULD BE INSERTED]."
-    headers = {
-        'content-type': "application/x-www-form-urlencoded",
-        'x-rapidapi-host': "sms77io.p.rapidapi.com",
-        'x-rapidapi-key': "1240ce2461msh8521b9001fad5a0p1829adjsn863efa27e883"
-        }
-
-    response = requests.request("POST", url, data=payload, headers=headers)
+    response = requests.request("GET", url)
     return None
 
 # SMS
@@ -78,9 +71,7 @@ async def send_sms():
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @circuit(failure_threshold=1, recovery_timeout=10, fallback_function=fallback_circuit)
 def sms():
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    async_call = loop.run_until_complete(send_sms())
+    send_sms()
     return {"response": "200"}, 200
 docs.register(sms)
 
