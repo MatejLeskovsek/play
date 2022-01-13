@@ -86,7 +86,7 @@ def get_holidays():
 docs.register(get_holidays)
 
 # GET GAMES
-@app.route("/plgetgames", methods=["POST"])
+@app.route("/plgetgames", methods=["DELETE"])
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong.', code=500)
 @circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
