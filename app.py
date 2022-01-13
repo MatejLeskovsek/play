@@ -14,6 +14,7 @@ import logging
 import socket
 from logging.handlers import SysLogHandler
 import json
+import asyncio
 
 app = Flask(__name__)
 app.config.update({
@@ -59,6 +60,30 @@ def fallback_circuit():
     logger.info("Configuration microservice: Circuit breaker fallback accessed")
     return "The service is temporarily unavailable.", 500
 
+async def send_sms():
+    url = "https://sms77io.p.rapidapi.com/sms"
+
+    payload = "to=+38651240003&p=lMs1ovHUq9dkr1irz477U0bqZcZN4ubgKWP0YMQ5JZuiGhIHIaU9WZssBj1chG1m&text=[THIS IS WHERE DATA WOULD BE INSERTED]."
+    headers = {
+        'content-type': "application/x-www-form-urlencoded",
+        'x-rapidapi-host': "sms77io.p.rapidapi.com",
+        'x-rapidapi-key': "1240ce2461msh8521b9001fad5a0p1829adjsn863efa27e883"
+        }
+
+    response = requests.request("POST", url, data=payload, headers=headers)
+    return None
+
+# SMS
+@app.route("/plsms")
+@marshal_with(NoneSchema, description='200 OK', code=200)
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=fallback_circuit)
+def sms():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    async_call = loop.run_until_complete(send_sms())
+    return {"response": "200"}, 200
+docs.register(sms)
+
 # HEALTH PAGE
 @app.route("/")
 @marshal_with(NoneSchema, description='200 OK', code=200)
@@ -75,6 +100,7 @@ def hello_world():
     return {"response": "Play microservice."}, 200
 docs.register(hello_world)
 
+# HOLIDAY CALL
 @app.route("/plgetholidays")
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong.', code=500)
