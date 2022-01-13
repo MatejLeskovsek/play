@@ -54,10 +54,15 @@ class NoneSchema(Schema):
 def not_found(e):
     return "The API call destination was not found.", 404
 
+
+def fallback_circuit():
+    logger.info("Configuration microservice: Circuit breaker fallback accessed")
+    return "The service is temporarily unavailable.", 500
+
 # HEALTH PAGE
 @app.route("/")
 @marshal_with(NoneSchema, description='200 OK', code=200)
-@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=fallback_circuit)
 def health():
     return {"response": "200"}, 200
 docs.register(health)
@@ -65,7 +70,7 @@ docs.register(health)
 # HOME PAGE
 @app.route("/pl")
 @marshal_with(NoneSchema, description='200 OK', code=200)
-@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=fallback_circuit)
 def hello_world():
     return {"response": "Play microservice."}, 200
 docs.register(hello_world)
@@ -73,7 +78,7 @@ docs.register(hello_world)
 @app.route("/plgetholidays")
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong.', code=500)
-@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=fallback_circuit)
 def get_holidays():
     logger.info("Play microservice: /plgetholidays accessed\n")
     try:
@@ -90,7 +95,7 @@ docs.register(get_holidays)
 @use_kwargs({'AccessToken': fields.Str()})
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong.', code=500)
-@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=fallback_circuit)
 def get_games():
     logger.info("Play microservice: /plgetgames accessed\n")
     try:
@@ -108,7 +113,7 @@ docs.register(hello_world)
 @use_kwargs({'AccessToken': fields.Str()})
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong.', code=500)
-@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=fallback_circuit)
 def join_game():
     logger.info("Play microservice: /pljoingame accessed\n")
     try:
@@ -127,7 +132,7 @@ docs.register(join_game)
 @use_kwargs({'AccessToken': fields.Str()})
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong.', code=500)
-@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=fallback_circuit)
 def leave_game():
     logger.info("Play microservice: /plleavegame accessed\n")
     try:
@@ -145,7 +150,7 @@ docs.register(leave_game)
 @use_kwargs({'name': fields.Str(), 'ip': fields.Str()})
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong', code=500)
-@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=fallback_circuit)
 def update_ip():
     global ecostreet_core_service
     global configuration_core_service
@@ -173,7 +178,7 @@ docs.register(update_ip)
 @use_kwargs({'name': fields.Str(), 'ip': fields.Str()})
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong', code=500)
-@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=fallback_circuit)
 def config_update():
     global ecostreet_core_service
     global configuration_core_service
@@ -204,7 +209,7 @@ docs.register(config_update)
 # FUNCTION TO GET CURRENT CONFIG 
 @app.route("/plgetconfig")
 @marshal_with(NoneSchema, description='200 OK', code=200)
-@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=fallback_circuit)
 def get_config():
     global ecostreet_core_service
     global configuration_core_service
@@ -222,7 +227,7 @@ docs.register(get_config)
 @app.route("/plmetrics")
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='METRIC CHECK FAIL', code=500)
-@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=fallback_circuit)
 def get_health():
     logger.info("Play microservice: /plmetrics accessed\n")
     start = datetime.datetime.now()
@@ -255,7 +260,7 @@ docs.register(get_health)
 # HEALTH CHECK
 @app.route("/plhealthcheck")
 @marshal_with(NoneSchema, description='200 OK', code=200)
-@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
+@circuit(failure_threshold=1, recovery_timeout=10, fallback_function=fallback_circuit)
 def send_health():
     logger.info("Play microservice: /plhealthcheck accessed\n")
     try:
