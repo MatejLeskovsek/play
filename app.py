@@ -14,7 +14,7 @@ import logging
 import socket
 from logging.handlers import SysLogHandler
 import json
-import grequests
+import asyncio
 
 app = Flask(__name__)
 app.config.update({
@@ -60,12 +60,10 @@ def fallback_circuit():
     logger.info("Configuration microservice: Circuit breaker fallback accessed")
     return "The service is temporarily unavailable.", 500
 
-def send_sms():
+async def send_sms():
     logger.info("Play microservice: asynchronously sending sms\n")
-    urls = [
-        "https://gateway.sms77.io/api/sms?p=lMs1ovHUq9dkr1irz477U0bqZcZN4ubgKWP0YMQ5JZuiGhIHIaU9WZssBj1chG1m&to=+38651240003&text=test&from=sms77.de&return_msg_id=1"
-    ]
-    rs = (grequests.get(u) for u in urls)
+    url = "https://gateway.sms77.io/api/sms?p=lMs1ovHUq9dkr1irz477U0bqZcZN4ubgKWP0YMQ5JZuiGhIHIaU9WZssBj1chG1m&to=+38651240003&text=test&from=sms77.de&return_msg_id=1"
+    response = requests.request("GET", url)
     logger.info("Play microservice: asynchronous sms sent\n")
     return None
 
@@ -75,7 +73,9 @@ def send_sms():
 @circuit(failure_threshold=1, recovery_timeout=10, fallback_function=fallback_circuit)
 def sms():
     logger.info("Play microservice: /plsms accessed\n")
-    send_sms()
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    async_call = loop.run_until_complete(send_sms())
     logger.info("Play microservice: /plsms finished\n")
     return {"response": "200"}, 200
 docs.register(sms)
