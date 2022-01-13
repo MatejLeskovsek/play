@@ -71,8 +71,8 @@ def hello_world():
 docs.register(hello_world)
 
 @app.route("/plgetholidays")
-@marshal_with(NoneSchema, code=200)
-@marshal_with(NoneSchema, code=500)
+@marshal_with(NoneSchema, description='200 OK', code=200)
+@marshal_with(NoneSchema, description='Something went wrong.', code=500)
 @circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
 def get_holidays():
     logger.info("Play microservice: /plgetholidays accessed\n")
@@ -87,6 +87,7 @@ docs.register(get_holidays)
 
 # GET GAMES
 @app.route("/plgetgames", methods=["POST"])
+@use_kwargs({'AccessToken': fields.Str()})
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong.', code=500)
 @circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
@@ -104,6 +105,7 @@ docs.register(hello_world)
 
 # JOIN GAME 
 @app.route("/pljoingame", methods=["PUT"])
+@use_kwargs({'AccessToken': fields.Str()})
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong.', code=500)
 @circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
@@ -122,6 +124,7 @@ docs.register(join_game)
 
 # LEAVE GAME
 @app.route("/plleavegame", methods=["DELETE"])
+@use_kwargs({'AccessToken': fields.Str()})
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong.', code=500)
 @circuit(failure_threshold=1, recovery_timeout=10, fallback_function=not_found("circuit_break"))
@@ -166,7 +169,7 @@ def update_ip():
 docs.register(update_ip)
 
 # FUNCTION TO UPDATE IP'S OF OTHER SERVICES
-@app.route("/plconfig", methods = ['POST'])
+@app.route("/plconfig", methods = ['PUT'])
 @use_kwargs({'name': fields.Str(), 'ip': fields.Str()})
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @marshal_with(NoneSchema, description='Something went wrong', code=500)
