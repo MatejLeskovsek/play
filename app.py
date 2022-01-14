@@ -62,7 +62,7 @@ def fallback_circuit():
 
 async def send_sms():
     logger.info("Play microservice: asynchronously sending sms\n")
-    url = "https://gateway.sms77.io/api/sms?p=lMs1ovHUq9dkr1irz477U0bqZcZN4ubgKWP0YMQ5JZuiGhIHIaU9WZssBj1chG1m&to=+38651240003&text=test&from=sms77.de&return_msg_id=1"
+    url = "https://gateway.sms77.io/api/sms?p=ViGMg6uyACMM2Q2vnXEBJBkOOZnefE26eJz1qGucKiJ8OgYm2l3SzizfRDC7bEDx&to=MatejTheLes&text=[THIS IS WHERE YOUR DATA WOULD BE]&from=ProjectTime"
     response = requests.request("GET", url)
     logger.info("Play microservice: asynchronous sms sent\n")
     return None
