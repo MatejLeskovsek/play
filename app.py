@@ -60,22 +60,23 @@ def fallback_circuit():
     logger.info("Configuration microservice: Circuit breaker fallback accessed")
     return "The service is temporarily unavailable.", 500
 
-async def send_sms():
+async def send_sms(number, token):
     logger.info("Play microservice: asynchronously sending sms\n")
-    url = "https://gateway.sms77.io/api/sms?p=ViGMg6uyACMM2Q2vnXEBJBkOOZnefE26eJz1qGucKiJ8OgYm2l3SzizfRDC7bEDx&to=MatejTheLes&text=[THIS IS WHERE YOUR DATA WOULD BE]&from=ProjectTime"
+    url = "https://gateway.sms77.io/api/sms?p=ViGMg6uyACMM2Q2vnXEBJBkOOZnefE26eJz1qGucKiJ8OgYm2l3SzizfRDC7bEDx&to="+ number +"&text=[THIS IS WHERE YOUR DATA WOULD BE IF I HAD ONE MORE DAY]&from=ProjectTime"
     response = requests.request("GET", url)
     logger.info("Play microservice: asynchronous sms sent\n")
     return None
 
 # SMS
-@app.route("/plsms")
+@app.route("/plsms", methods=["POST"])
+@use_kwargs({'number': fields.Str(), "AccessToken": fields.Str()})
 @marshal_with(NoneSchema, description='200 OK', code=200)
 @circuit(failure_threshold=1, recovery_timeout=10, fallback_function=fallback_circuit)
 def sms():
     logger.info("Play microservice: /plsms accessed\n")
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    async_call = loop.run_until_complete(send_sms())
+    async_call = loop.run_until_complete(send_sms(request.form["number"], request.form["AccessToken"]))
     logger.info("Play microservice: /plsms finished\n")
     return {"response": "200"}, 200
 docs.register(sms)
